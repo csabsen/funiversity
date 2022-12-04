@@ -9,6 +9,7 @@ function university_post_types()
 			// you can rewrite it here
 			'slug' => 'events',
 		],
+		'supports' => ['title', 'editor', 'excerpt'], // enable the excerpt
 		'has_archive' => true,
 		'public' => true,
 		'labels' => [
