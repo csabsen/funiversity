@@ -18,16 +18,31 @@
     <h2 class="headline headline--small-plus t-center">Upcoming Events</h2>
 
     <?php
+    $today = date('Ymd');
     $events = new WP_Query([
-    	'posts_per_page' => 2,
+    	'posts_per_page' => -1,
     	'post_type' => 'event',
+    	'orderby' => 'meta_value_num',
+    	'meta_key' => 'event_date',
+    	'order' => 'ASC',
+    	'meta_query' => [
+    		[
+    			'key' => 'event_date',
+    			'compare' => '>=',
+    			'value' => $today,
+    			'type' => 'numeric',
+    		],
+    	],
     ]);
+    // print_r($events);
 
     while ($events->have_posts()) {
     	$events->the_post(); ?> 
       
       <div class="event-summary">
+      
             <a class="event-summary__date event-summary__date--beige t-center" href="<?php the_permalink(); ?>">
+            
               <span class="event-summary__month">
                 <?php
                 $eventDate = new DateTime(get_field('event_date'));
