@@ -31,7 +31,7 @@
               </li>
               <li><a href="#">Programs</a></li>
               <li
-              <?php if (get_post_type() == 'event') {
+              <?php if (get_post_type() == 'event' or is_page('past-events')) {
               	echo 'class="current-menu-item"';
               } ?>
               >

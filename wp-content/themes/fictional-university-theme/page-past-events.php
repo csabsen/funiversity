@@ -7,18 +7,35 @@ get_header(); ?>
       
       <div class="page-banner__content container container--narrow">
         <h1 class="page-banner__title">
-        All Events
+        Past Events
         </h1>
         <div class="page-banner__intro">
-          <p>Whats Happenin</p>
+          <p>Recap of our past events</p>
         </div>
       </div>
     </div>
 
     <div class="container container--narrow page-section">
       <?php
-      while (have_posts()) {
-      	the_post(); ?>
+      $today = date('Ymd');
+      $pastEvents = new WP_Query([
+      	'paged' => get_query_var('paged', 1), // use this to create pagination for custom WP_Query
+      	'post_type' => 'event',
+      	'orderby' => 'meta_value_num',
+      	'meta_key' => 'event_date',
+      	'order' => 'ASC',
+      	'meta_query' => [
+      		[
+      			'key' => 'event_date',
+      			'compare' => '<',
+      			'value' => $today,
+      			'type' => 'numeric',
+      		],
+      	],
+      ]);
+
+      while ($pastEvents->have_posts()) {
+      	$pastEvents->the_post(); ?>
             <div class="event-summary">
             <a class="event-summary__date event-summary__date--beige t-center" href="<?php the_permalink(); ?>">
             
@@ -43,12 +60,11 @@ get_header(); ?>
           </div>
         <?php
       }
-      echo paginate_links();
+      echo paginate_links([
+      	'total' => $pastEvents->max_num_pages,
+      ]);
       ?>
-      <hr class="section-break">
-      <p>Looking for past events? <a href="<?php echo site_url(
-      	'/past-events'
-      ); ?>">Check them out here</a></p>
+
     </div>
 
 <?php get_footer();
